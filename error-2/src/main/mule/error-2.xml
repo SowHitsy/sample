@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c7ff6fca-28a7-41ae-afc7-441121ffe612" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="error-2Flow" doc:id="47058c31-da0f-43a0-b9c9-8f8ed853ff12" >
+		<http:listener doc:name="Listener" doc:id="8ed62eef-46eb-4934-b4ca-c8a5f739f5cc" config-ref="HTTP_Listener_config" path="choice"/>
+		<set-variable value="200" doc:name="Set Variable" doc:id="3ae5007d-0548-4274-b109-5fa1d79391da" variableName="amount"/>
+		<choice doc:name="Choice" doc:id="c28d9dcd-34bc-41c7-bd29-3890baed160f" >
+			<when expression="#[payload.order_amount &lt;= vars.amount]">
+				<ee:transform doc:name="Transform Message" doc:id="fcbf9050-f3e1-4a64-b71e-6399ea2c7d22" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "order place succesfully"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<raise-error doc:name="Raise error" doc:id="47bbd4bf-130d-4193-a6f5-9968b03f0457" type="funds" description="u dont have funds"/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="7f3aac68-cd11-4c06-bdad-fe5b88767df0" message="#[payload]"/>
+	</flow>
+</mule>
