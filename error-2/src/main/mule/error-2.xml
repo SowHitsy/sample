@@ -12,6 +12,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<flow name="error-2Flow" doc:id="47058c31-da0f-43a0-b9c9-8f8ed853ff12" >
 		<http:listener doc:name="Listener" doc:id="8ed62eef-46eb-4934-b4ca-c8a5f739f5cc" config-ref="HTTP_Listener_config" path="choice"/>
 		<set-variable value="200" doc:name="Set Variable" doc:id="3ae5007d-0548-4274-b109-5fa1d79391da" variableName="amount"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1d0186e1-19d9-47b9-a494-526e13b0455b" message="first logger"/>
 		<choice doc:name="Choice" doc:id="c28d9dcd-34bc-41c7-bd29-3890baed160f" >
 			<when expression="#[payload.order_amount &lt;= vars.amount]">
 				<ee:transform doc:name="Transform Message" doc:id="fcbf9050-f3e1-4a64-b71e-6399ea2c7d22" >
